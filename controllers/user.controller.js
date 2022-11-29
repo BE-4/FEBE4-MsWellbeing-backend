@@ -13,12 +13,12 @@ module.exports = {
 
     user.save((err) => {
       if (err) {
-        res.status(500).send({
+        res.status(500).json({
           message: err,
         });
         return;
       } else {
-        res.status(200).send({
+        res.status(200).json({
           message: "Success register !",
         });
       }
