@@ -18,7 +18,7 @@ const articleSchema = new Schema({
     required: true,
     type: Boolean,
   },
-  genre: {
+  GENRE: {
     required: true,
     type: String,
   },

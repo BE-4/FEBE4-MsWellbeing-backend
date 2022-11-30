@@ -45,6 +45,59 @@ module.exports = {
     }
   },
 
+  searchArticle: async (req, res) => {
+    try {
+      const { keyword } = req.params;
+      const article = await Article.find({
+        title: { $regex: new RegExp(keyword, "i") },
+      });
+
+      if (article !== null) {
+        res.status(200).json(article);
+      } else {
+        return error;
+      }
+    } catch (error) {
+      res.status(404).json({
+        message: "Article not found",
+      });
+    }
+  },
+
+  newArticle: async (req, res) => {
+    try {
+      const { keyword } = req.params;
+      const article = await Article.find({ new: keyword });
+
+      if (article !== null) {
+        res.status(200).json(article);
+      } else {
+        return error;
+      }
+    } catch (error) {
+      res.status(404).json({
+        message: "Article not found",
+      });
+    }
+  },
+
+  popularArticle: async (req, res) => {
+    try {
+      const { keyword } = req.params;
+      const article = await Article.find({ popular: keyword });
+
+      if (article !== null) {
+        res.status(200).json(article);
+      } else {
+        return error;
+      }
+    } catch (error) {
+      res.status(404).json({
+        message: "Article not found",
+      });
+    }
+  },
+
   deleteArticleById: async (req, res) => {
     try {
       const { id } = req.params;
