@@ -17,6 +17,7 @@ const articleSchema = new Schema({
   new: {
     required: true,
     type: Boolean,
+    default: true,
   },
   GENRE: {
     required: true,

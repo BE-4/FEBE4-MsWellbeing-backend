@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
+const uniqueValidator = require("mongoose-unique-validator");
 
 const psikologSchema = new Schema({
-  nama: {
+  name: {
     type: String,
     required: true,
-
+    unique: true,
   },
   pengalaman: {
     type: String,
@@ -14,5 +15,6 @@ const psikologSchema = new Schema({
 });
 
 const Psikolog = mongoose.model("Psikolog", psikologSchema);
+psikologSchema.plugin(uniqueValidator);
 
 module.exports = Psikolog;

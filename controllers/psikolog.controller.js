@@ -3,14 +3,17 @@ const Psikolog = require("../models/psikolog");
 module.exports = {
   getAllPsikolog: async (req, res) => {
     try {
-      const psikolog = await Psikolog.find({}, "-password -__v -pengalaman");
+      const psikolog = await Psikolog.find({});
 
-      res.status(200).json({
-        message: "success get data psikolog",
-        data: psikolog,
-      });
+      if (psikolog !== null) {
+        res.status(200).json(psikolog);
+      } else {
+        return error;
+      }
     } catch (error) {
-      console.log(error);
+      res.status(404).json({
+        message: "Cannot get psikolog data",
+      });
     }
   },
 
@@ -19,24 +22,30 @@ module.exports = {
       const { id } = req.params;
       const psikolog = await Psikolog.findById(id, "-__v -_id");
 
-      res.status(200).json({
-        message: "success get data user",
-        data: psikolog,
-      });
+      if (psikolog !== null) {
+        res.status(200).json(psikolog);
+      } else {
+        return error;
+      }
     } catch (error) {
-      console.log(error);
+      res.status(404).json({
+        message: "Cannot get psikolog data",
+      });
     }
   },
 
   addPsikolog: (req, res) => {
-    const data = req.body;
-    const psikolog = new Psikolog(data);
+    try {
+      const data = req.body;
+      const psikolog = new Psikolog(data);
+      if (data !== null) {
+        psikolog.save();
 
-    psikolog.save();
-
-    res.status(200).json({
-      message: "Psikolog baru berhasil ditambahkan !",
-    });
+        res.status(200).json({
+          message: "Psikolog baru berhasil ditambahkan !",
+        });
+      }
+    } catch (error) {}
   },
 
   updatePsikolog: async (req, res) => {
@@ -61,7 +70,6 @@ module.exports = {
     await psikolog.remove();
     res.json({
       message: "Data yang dipilih berhasil dihapus !",
-      data: "terhapus",
     });
-  }
+  },
 };

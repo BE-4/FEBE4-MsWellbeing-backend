@@ -7,7 +7,7 @@ const {
   getDetailUser,
   addUser,
   updateUser,
-  deleteUser ,
+  deleteUser,
 } = require("../controllers/user.controller");
 
 router.post("/register", register);

@@ -7,6 +7,7 @@ module.exports = {
     const user = new User({
       name: req.body.name,
       email: req.body.email,
+      no_handphone: req.body.no_handphone,
       role: req.body.role,
       password: bcrypt.hashSync(req.body.password, 8),
     });
@@ -65,73 +66,97 @@ module.exports = {
           id: user._id,
           email: user.email,
           name: user.name,
+          no_handphone: user.no_handphone,
           role: user.role,
         },
         message: "Login success!",
         accessToken: token,
       });
     });
-    
+  },
+
   getAllUser: async (req, res) => {
-  try {
-    const user = await User.find({}, "-password -__v -email")
-    res.status(200).json({
-      message: "success get data user",
-      data: user,
-    });
-  } catch (error) {
-    console.log(error);
-  }
-},
+    try {
+      const user = await User.find({}, "-password -__v -email");
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(500).json({
+        message: error,
+      });
+    }
+  },
 
-getDetailUser: async (req, res) => {
-  try {
-    const { id } = req.params;
-    const user = await User.findById(id, "-__v -_id");
+  getDetailUser: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const user = await User.findById(id, "-__v -_id");
 
-    res.status(200).json({
-      message: "success get data user",
-      data: user,
-    });
-  } catch (error) {
-    console.log(error);
-  }
-},
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(500).json({
+        message: error,
+      });
+    }
+  },
 
-addUser: (req, res) => {
-  const data = req.body;
-  const user = new User(data);
+  addUser: (req, res) => {
+    try {
+      const data = req.body;
+      const user = new User(data);
 
-  user.save();
+      user.save();
+      if (data !== null) {
+        res.status(200).json({
+          message: "User baru berhasil ditambahkan !",
+        });
+      } else {
+        return error;
+      }
+    } catch (error) {
+      res.status(500).json({
+        message: error,
+      });
+    }
+  },
 
-  res.status(200).json({
-    message: "User baru berhasil ditambahkan !",
-  });
-},
+  updateUser: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const data = req.body;
 
-updateUser: async (req, res) => {
-  const { id } = req.params;
-  const data = req.body;
+      const user = await User.findByIdAndUpdate(id, data);
 
-  const user = await User.findByIdAndUpdate(id, data);
+      if (data !== null) {
+        await user.save();
 
-  await user.save();
+        res.status(200).json({
+          message: "Data berhasil di Update !",
+        });
 
-  res.status(200).json({
-    message: "Data berhasil di Update !",
-  });
+        user.save();
+      } else {
+        return error;
+      }
+    } catch (error) {
+      res.status(500).json({
+        message: error,
+      });
+    }
+  },
 
-  user.save();
-},
+  deleteUser: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const user = await User.findById(id);
 
-deleteUser: async (req, res) => {
-  const { id } = req.params;
-  const user = await User.findById(id);
-
-  await user.remove();
-  res.json({
-    message: "Data berhasil dihapus !",
-    data: "terhapus",
-  });
-}
+      await user.remove();
+      res.json({
+        message: "Data berhasil dihapus !",
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: error,
+      });
+    }
+  },
 };
