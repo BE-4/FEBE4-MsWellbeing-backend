@@ -3,6 +3,7 @@ const router = express.Router();
 
 const {
   getAllPsikolog,
+  getRecomendedPsikolog,
   addPsikolog,
   updatePsikolog,
   deletePsikolog,
@@ -10,6 +11,7 @@ const {
 } = require("../controllers/psikolog.controller");
 
 router.get("/", getAllPsikolog);
+router.get("/rekomendasi", getRecomendedPsikolog);
 router.get("/:id", getDetailPsikolog);
 router.post("/", addPsikolog);
 router.patch("/:id", updatePsikolog);

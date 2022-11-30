@@ -5,7 +5,7 @@ const User = require("../models/user");
 module.exports = {
   register: (req, res) => {
     const user = new User({
-      name: req.body.name,
+      nama: req.body.nama,
       email: req.body.email,
       no_handphone: req.body.no_handphone,
       role: req.body.role,

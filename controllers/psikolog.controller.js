@@ -4,12 +4,7 @@ module.exports = {
   getAllPsikolog: async (req, res) => {
     try {
       const psikolog = await Psikolog.find({});
-
-      if (psikolog !== null) {
-        res.status(200).json(psikolog);
-      } else {
-        return error;
-      }
+      res.status(200).json(psikolog);
     } catch (error) {
       res.status(404).json({
         message: "Cannot get psikolog data",
@@ -21,12 +16,7 @@ module.exports = {
     try {
       const { id } = req.params;
       const psikolog = await Psikolog.findById(id, "-__v -_id");
-
-      if (psikolog !== null) {
-        res.status(200).json(psikolog);
-      } else {
-        return error;
-      }
+      res.status(200).json(psikolog);
     } catch (error) {
       res.status(404).json({
         message: "Cannot get psikolog data",
@@ -34,18 +24,47 @@ module.exports = {
     }
   },
 
+  getRecomendedPsikolog: async (req, res) => {
+    try {
+      const psikolog = await Psikolog.find({ rekomendasi: true });
+
+      res.status(200).json(psikolog);
+    } catch (error) {
+      res.status(404).json({
+        message: "Cannot found data",
+      });
+    }
+  },
+
   addPsikolog: (req, res) => {
     try {
-      const data = req.body;
-      const psikolog = new Psikolog(data);
-      if (data !== null) {
-        psikolog.save();
-
-        res.status(200).json({
-          message: "Psikolog baru berhasil ditambahkan !",
-        });
-      }
-    } catch (error) {}
+      const psikolog = new Psikolog({
+        nama: req.body.nama,
+        gambarURL: req.body.gambarURL,
+        spesialis: req.body.spesialis,
+        lokasi: req.body.lokasi,
+        lokasiURL: req.body.lokasiURL,
+        lulusan: req.body.lulusan,
+        pengalaman: req.body.pengalaman,
+        rekomendasi: req.body.rekomendasi,
+      });
+      psikolog.save((err) => {
+        if (err) {
+          res.status(500).json({
+            message: err,
+          });
+          return;
+        } else {
+          res.status(200).json({
+            message: "Psikolog baru berhasil ditambahkan !",
+          });
+        }
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: error,
+      });
+    }
   },
 
   updatePsikolog: async (req, res) => {
@@ -64,12 +83,18 @@ module.exports = {
   },
 
   deletePsikolog: async (req, res) => {
-    const { id } = req.params;
-    const psikolog = await Psikolog.findById(id);
+    try {
+      const { id } = req.params;
+      const psikolog = await Psikolog.findById(id);
 
-    await psikolog.remove();
-    res.json({
-      message: "Data yang dipilih berhasil dihapus !",
-    });
+      await psikolog.remove();
+      res.json({
+        message: "Data yang dipilih berhasil dihapus !",
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: error,
+      });
+    }
   },
 };

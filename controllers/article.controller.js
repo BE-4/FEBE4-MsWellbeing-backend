@@ -15,12 +15,7 @@ module.exports = {
   getArticle: async (req, res) => {
     try {
       const article = await Article.find({});
-
-      if (article !== null) {
-        res.status(200).json(article);
-      } else {
-        return error;
-      }
+      res.status(200).json(article);
     } catch (error) {
       res.status(500).json({
         message: "Cannot get article data",
@@ -33,11 +28,7 @@ module.exports = {
       const { id } = req.params;
       const article = await Article.findById(id);
 
-      if (article !== null) {
-        res.status(200).json(article);
-      } else {
-        return error;
-      }
+      res.status(200).json(article);
     } catch (error) {
       res.status(404).json({
         message: "Article not found",
@@ -52,11 +43,7 @@ module.exports = {
         title: { $regex: new RegExp(keyword, "i") },
       });
 
-      if (article !== null) {
-        res.status(200).json(article);
-      } else {
-        return error;
-      }
+      res.status(200).json(article);
     } catch (error) {
       res.status(404).json({
         message: "Article not found",
@@ -69,11 +56,7 @@ module.exports = {
       const { keyword } = req.params;
       const article = await Article.find({ new: keyword });
 
-      if (article !== null) {
-        res.status(200).json(article);
-      } else {
-        return error;
-      }
+      res.status(200).json(article);
     } catch (error) {
       res.status(404).json({
         message: "Article not found",
@@ -85,12 +68,7 @@ module.exports = {
     try {
       const { keyword } = req.params;
       const article = await Article.find({ popular: keyword });
-
-      if (article !== null) {
-        res.status(200).json(article);
-      } else {
-        return error;
-      }
+      res.status(200).json(article);
     } catch (error) {
       res.status(404).json({
         message: "Article not found",
@@ -102,16 +80,11 @@ module.exports = {
     try {
       const { id } = req.params;
       const article = await Article.findById(id);
+      await article.remove();
 
-      if (article !== null) {
-        await article.remove();
-
-        res.status(200).json({
-          message: "Success delete article data",
-        });
-      } else {
-        return error;
-      }
+      res.status(200).json({
+        message: "Success delete article data",
+      });
     } catch (error) {
       res.status(404).json({
         message: "Article not found",
@@ -126,15 +99,11 @@ module.exports = {
 
       const article = await Article.findByIdAndUpdate(id, data);
 
-      if (article !== null) {
-        await article.save();
+      await article.save();
 
-        res.status(200).json({
-          message: "Article has been updated",
-        });
-      } else {
-        return error;
-      }
+      res.status(200).json({
+        message: "Article has been updated",
+      });
 
       article.save();
     } catch (error) {
