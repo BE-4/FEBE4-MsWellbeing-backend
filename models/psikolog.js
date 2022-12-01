@@ -30,6 +30,7 @@ const psikologSchema = new Schema({
   },
   rekomendasi: {
     type: Boolean,
+    default: false,
   },
 });
 

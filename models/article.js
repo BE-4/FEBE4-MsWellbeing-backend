@@ -19,7 +19,7 @@ const articleSchema = new Schema({
     type: Boolean,
     default: true,
   },
-  GENRE: {
+  genre: {
     required: true,
     type: String,
   },
