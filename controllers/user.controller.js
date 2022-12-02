@@ -47,7 +47,6 @@ module.exports = {
       );
       if (!passwordIsValid) {
         return res.json({
-          accessToken: null,
           message: "Wrong password",
         });
       }
