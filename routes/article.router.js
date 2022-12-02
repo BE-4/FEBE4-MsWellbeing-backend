@@ -12,6 +12,8 @@ const {
   updateArticleById,
 } = require("../controllers/article.controller");
 
+const { verifyToken } = require("../middleware/VerifyToken");
+
 router.post("/", addArticle);
 router.get("/", getArticle);
 router.get("/search=:keyword", searchArticle);

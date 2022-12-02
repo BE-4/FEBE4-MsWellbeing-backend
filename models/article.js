@@ -7,12 +7,12 @@ const articleSchema = new Schema({
     type: String,
   },
   sub_title: {
-    required: true,
     type: String,
   },
   popular: {
     required: true,
     type: Boolean,
+    default: false,
   },
   new: {
     required: true,
@@ -24,7 +24,6 @@ const articleSchema = new Schema({
     type: String,
   },
   imgURL: {
-    required: true,
     type: String,
   },
   description: {
