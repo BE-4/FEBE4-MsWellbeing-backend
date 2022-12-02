@@ -8,7 +8,14 @@
   const express = require("express");
   const router = express.Router();
 
-  const { getAllPsikolog, getRecomendedPsikolog, addPsikolog, updatePsikolog, deletePsikolog, getDetailPsikolog } = require("../controllers/psikolog.controller");
+  const {
+    getAllPsikolog,
+    getRecomendedPsikolog,
+    addPsikolog,
+    updatePsikolog,
+    deletePsikolog,
+    getDetailPsikolog,
+  } = require("../controllers/psikolog.controller");
 
   router.get("/", getAllPsikolog);
   router.get("/rekomendasi", getRecomendedPsikolog);
@@ -193,7 +200,15 @@
   ```js
   const express = require("express");
   const router = express.Router();
-  const { register, login, getAllUser, getDetailUser, addUser, updateUser, deleteUser } = require("../controllers/user.controller");
+  const {
+    register,
+    login,
+    getAllUser,
+    getDetailUser,
+    addUser,
+    updateUser,
+    deleteUser,
+  } = require("../controllers/user.controller");
 
   router.post("/register", register);
   router.post("/login", login);
@@ -247,6 +262,90 @@
   ```
 
 - Controller :
+
+  - register
+
+    ```js
+      register: (req, res) => {
+        const user = new User({
+          nama: req.body.nama,
+          email: req.body.email,
+          no_handphone: req.body.no_handphone,
+          role: req.body.role,
+          password: bcrypt.hashSync(req.body.password, 8),
+        });
+
+      user.save((err) => {
+        if (err) {
+          res.status(500).json({
+            message: err,
+          });
+          return;
+        } else {
+          res.status(200).json({
+            message: "Success register !",
+          });
+        }
+      });
+    },
+    ```
+
+    ![img](./user/user_register.png)
+
+  - login
+
+    ```js
+    login: async (req, res) => {
+      const user = await User.findOne({
+        email: req.body.email,
+      }).exec((err, user) => {
+      if (err) {
+        res.status(500).json({
+          message: err,
+        });
+        return;
+      }
+      if (!user) {
+        return res.status(404).json({
+          message: "User not found",
+        });
+      }
+      const passwordIsValid = bcrypt.compareSync(
+        req.body.password,
+        user.password
+      );
+      if (!passwordIsValid) {
+        return res.json({
+          accessToken: null,
+          message: "Wrong password",
+        });
+      }
+      const token = jwt.sign(
+        {
+          id: user.id,
+          role: user.role,
+        },
+        process.env.ACCESS_TOKEN_SECRET,
+        {
+          expiresIn: "1200s",
+        }
+      );
+      res.status(200).json({
+        user: {
+          id: user._id,
+          email: user.email,
+          name: user.name,
+          no_handphone: user.no_handphone,
+          role: user.role,
+        },
+        message: "Login success!",
+        accessToken: token,
+      });
+    });
+    },
+    ```
+
+    ![img](./user/user_login.png)
 
   - getAllUser :
 
