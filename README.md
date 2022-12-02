@@ -451,3 +451,244 @@
     ```
 
     ![img](./user/deleteuser.jpeg)
+
+## _Endpoint Article_
+
+- Router
+
+  ```js
+  const express = require("express");
+  const router = express.Router();
+
+  const {
+    addArticle,
+    getArticle,
+    searchArticle,
+    newArticle,
+    popularArticle,
+    getArticleById,
+    deleteArticleById,
+    updateArticleById,
+  } = require("../controllers/article.controller");
+
+  const { verifyToken } = require("../middleware/VerifyToken");
+
+  router.post("/", addArticle);
+  router.get("/", getArticle);
+  router.get("/search=:keyword", searchArticle);
+  router.get("/new=:keyword", newArticle);
+  router.get("/popular=:keyword", popularArticle);
+  router.get("/:id", getArticleById);
+  router.delete("/:id", deleteArticleById);
+  router.patch("/:id", updateArticleById);
+
+  module.exports = router;
+  ```
+
+- Model
+
+  ```js
+  const mongoose = require("mongoose");
+  const { Schema } = mongoose;
+
+  const articleSchema = new Schema({
+    title: {
+      required: true,
+      type: String,
+    },
+    sub_title: {
+      type: String,
+    },
+    popular: {
+      required: true,
+      type: Boolean,
+      default: false,
+    },
+    new: {
+      required: true,
+      type: Boolean,
+      default: true,
+    },
+    genre: {
+      required: true,
+      type: String,
+    },
+    imgURL: {
+      type: String,
+    },
+    description: {
+      required: true,
+      type: String,
+    },
+    text: {
+      required: true,
+      type: String,
+    },
+  });
+
+  const Article = mongoose.model("Article", articleSchema);
+
+  module.exports = Article;
+  ```
+
+- Controller
+
+  - addArticle
+
+    ```js
+      addArticle: (req, res) => {
+        const data = req.body;
+        const article = new Article(data);
+
+        article.save();
+
+        res.status(200).json({
+          message: "New article has been created !",
+        });
+      },
+    ```
+
+    ![img](./article/addArticle.png)
+
+  - getArticle
+
+    ```js
+      getArticle: async (req, res) => {
+        try {
+          const article = await Article.find({});
+          res.status(200).json(article);
+        } catch (error) {
+          res.status(500).json({
+            message: "Cannot get article data",
+          });
+        }
+      },
+    ```
+
+    ![img](./article/getArticle.png)
+
+  - getArticleById
+
+    ```js
+      getArticleById: async (req, res) => {
+        try {
+          const { id } = req.params;
+          const article = await Article.findById(id);
+
+          res.status(200).json(article);
+        } catch (error) {
+          res.status(404).json({
+            message: "Article not found",
+          });
+        }
+      },
+    ```
+
+    ![img](./article/getArticleById.png)
+
+  - searchArticle
+
+    ```js
+      searchArticle: async (req, res) => {
+        try {
+          const { keyword } = req.params;
+          const article = await Article.find({
+            title: { $regex: new RegExp(keyword, "i") },
+          });
+
+          res.status(200).json(article);
+        } catch (error) {
+          res.status(404).json({
+            message: "Article not found",
+          });
+        }
+      },
+    ```
+
+    ![img](./article/searchArticle.png)
+
+  - newArticle
+
+    ```js
+      newArticle: async (req, res) => {
+        try {
+          const { keyword } = req.params;
+          const article = await Article.find({ new: keyword });
+
+          res.status(200).json(article);
+        } catch (error) {
+          res.status(404).json({
+            message: "Article not found",
+          });
+        }
+      },
+    ```
+
+    ![img](./article/newArticle.png)
+
+  - popularArticle
+
+    ```js
+       popularArticle: async (req, res) => {
+        try {
+          const { keyword } = req.params;
+          const article = await Article.find({ popular: keyword });
+          res.status(200).json(article);
+        } catch (error) {
+          res.status(404).json({
+            message: "Article not found",
+          });
+        }
+      },
+    ```
+
+    ![img](./article/popularArticle.png)
+
+  - deleteArticleById
+
+    ```js
+     deleteArticleById: async (req, res) => {
+      try {
+        const { id } = req.params;
+        const article = await Article.findById(id);
+        await article.remove();
+
+        res.status(200).json({
+          message: "Success delete article data",
+        });
+      } catch (error) {
+        res.status(404).json({
+          message: "Article not found",
+        });
+      }
+    },
+    ```
+
+    ![img](./article/deleteArticleById.png)
+
+  - updateArticleById
+
+    ```js
+    updateArticleById: async (req, res) => {
+      try {
+        const { id } = req.params;
+        const data = req.body;
+
+        const article = await Article.findByIdAndUpdate(id, data);
+
+        await article.save();
+
+        res.status(200).json({
+          message: "Article has been updated",
+        });
+
+        article.save();
+      } catch (error) {
+        res.status(404).json({
+          message: "Article not found",
+        });
+      }
+    },
+    ```
+
+    ![img](./article/updateArticleById.png)
